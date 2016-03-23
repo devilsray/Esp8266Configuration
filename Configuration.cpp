@@ -3,8 +3,6 @@
 #include "Configuration.h"
 #include <map>
 
-// workarround to not kill my laptop by trying to handle fucking c++ maps
-
 char* wifi_ap_ssid = new char[255];
 char* wifi_ap_password = new char[255];
 bool wifi_ap_enabled = new char[255];
@@ -18,15 +16,6 @@ char* mqtt_host = new char[255];
 int mqtt_port = 1883;
 char* mqtt_user = new char[255];
 char* mqtt_password = new char[255];
-
-//#define enum class WIFI_AP {WIFI_AP_SSID = TYPES::STRING, WIFI_AP_PASSWORD = TYPES::STRING}
-
-//#define enum class WIFI_STATION {WIFI_STATION_SSID = TYPES::STRING, WIFI_STATION_PASSWORD = TYPES::STRING}
-
-//#define enum class MQTT {MQTT_SERVER = TYPES::STRING, MQTT_PORT = TYPES::STRING, MQTT_USER = TYPES::STRING, MQTT_PASSWORD = TYPES::STRING}
-
-//  std::map<std::string, std::string> configs;
-
 
 void Configuration::setWifiApSsid(char* ssid){
   wifi_ap_ssid = ssid;
@@ -121,12 +110,12 @@ bool Configuration::isWifiApConfigurationValid(){
 
 bool Configuration::isWifiStationConfigurationValid(){
 
-    return (
-      wifi_station_password != NULL &&
-      strlen(wifi_station_password) > 7 &&
-      wifi_station_ssid != NULL &&
-      strlen(wifi_station_ssid) >2
-    );
+  return (
+    wifi_station_password != NULL &&
+    strlen(wifi_station_password) > 7 &&
+    wifi_station_ssid != NULL &&
+    strlen(wifi_station_ssid) >2
+  );
 }
 
 bool Configuration::isWifiApEnabled(){
@@ -143,12 +132,12 @@ bool Configuration::isMqttEnabled() {
 
 bool Configuration::isMqttConfigurationValid(){
 
-      return (
-        mqtt_host != NULL &&
-        sizeof mqtt_host > 3 &&
-        mqtt_port > 1000 &&
-        mqtt_port < 30000
-      );
+  return (
+    mqtt_host != NULL &&
+    sizeof mqtt_host > 3 &&
+    mqtt_port > 1000 &&
+    mqtt_port < 30000
+  );
 }
 
 void Configuration::writeConfiguration(const char* configuration){
@@ -166,10 +155,6 @@ void Configuration::writeConfiguration(const char* configuration){
 
 
 void Configuration::read(){
-
-  //read configuration from FS json
-  // Serial.println("mounting FS...");
-  //
   if (SPIFFS.begin()) {
     Serial.println("mounted file system");
     if (SPIFFS.exists("/configuration.json")) {
@@ -179,9 +164,8 @@ void Configuration::read(){
       if (configFile) {
         Serial.println("opened config file");
         size_t size = configFile.size();
-        //       // Allocate a buffer to store contents of the file.
+        // Allocate a buffer to store contents of the file.
         std::unique_ptr<char[]> buf(new char[size]);
-        //
         configFile.readBytes(buf.get(), size);
         DynamicJsonBuffer jsonBuffer;
         JsonObject& json = jsonBuffer.parseObject(buf.get());
