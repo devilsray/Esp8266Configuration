@@ -1,12 +1,11 @@
 {
     "name": "Esp8266Configuration",
-    "keywords": "configurtion, iot, esp8266",
+    "keywords": "configuration, iot, esp8266",
     "description": "store and read configuration from SPIFFS (wifi ap, wifi station, mqtt ..)",
     "repository":
     {
         "type": "git",
         "url": "https://github.com/devilsray/Esp8266Configuration"
     },
-    "frameworks": "arduino",
-    "platforms": "Espressif"
+    "frameworks": "arduino"
 }
