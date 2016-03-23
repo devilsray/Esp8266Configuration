@@ -19,6 +19,14 @@ class Configuration
     int getMqttPort();
     char* getMqttPassword();
     char* getMqttUser();
+    void setWifiApSsid(char* ssid);
+    void setWifiApPassword(char* password);
+    void setWifiStationSsid(char* ssid);
+    void setWifiStationPassword(char* password);
+    void setMqttServer(char* server);
+    void setMqttPort(int port);
+    void setMqttPassword(char* password);
+    void setMqttUser(char* user);
     bool isWifiApConfigurationValid();
     bool isWifiStationConfigurationValid();
     bool isMqttConfigurationValid();

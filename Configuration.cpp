@@ -27,6 +27,32 @@ char* mqtt_password = new char[255];
 
 //  std::map<std::string, std::string> configs;
 
+
+void Configuration::setWifiApSsid(char* ssid){
+  wifi_ap_ssid = ssid;
+}
+void Configuration::setWifiApPassword(char* password){
+  wifi_ap_password = password;
+}
+void Configuration::setWifiStationSsid(char* ssid){
+  wifi_station_ssid = ssid;
+}
+void Configuration::setWifiStationPassword(char* password){
+  wifi_station_password = password;
+}
+void Configuration::setMqttServer(char* server){
+  mqtt_host = server;
+}
+void Configuration::setMqttPort(int port){
+  mqtt_port = port;
+}
+void Configuration::setMqttPassword(char* password){
+  mqtt_password = password;
+}
+void Configuration::setMqttUser(char* user){
+  mqtt_user = user;
+}
+
 char* Configuration::getWifiApSsid(){
   return wifi_ap_ssid;
 }
