@@ -11,11 +11,13 @@
     "type": "git",
     "url": "https://github.com/devilsray/Esp8266Configuration"
   },
+  "version": "0.0.1",
   "dependencies":
   {
     "name": "Json",
     "authors": "Benoit Blanchon",
     "frameworks": "arduino"
   },
-  "frameworks": "arduino"
+  "frameworks": "arduino",
+  "platforms": "espressif"
 }
