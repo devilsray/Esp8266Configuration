@@ -1,24 +1,5 @@
-#include <FS.h>
-#include <ArduinoJson.h>          //https://github.com/bblanchon/ArduinoJson
+
 #include "Esp8266Configuration.h"
-#include <map>
-
-// wifi ap variables
-char* wifi_ap_ssid = new char[255];
-char* wifi_ap_password = new char[255];
-bool wifi_ap_enabled = new char[255];
-
-// wifi station variables
-char* wifi_station_ssid = new char[255];
-char* wifi_station_password = new char[255];
-bool wifi_station_enabled = new char[255];
-
-// mqtt configuration variables
-bool mqtt_enabled = new char[255];
-char* mqtt_host = new char[255];
-char* mqtt_user = new char[255];
-char* mqtt_password = new char[255];
-int mqtt_port = 1883;
 
 void Esp8266Configuration::setWifiApSsid(char* ssid){
   wifi_ap_ssid = ssid;
@@ -98,7 +79,7 @@ void Esp8266Configuration::write(){
   json.printTo(Serial);
   json.printTo(configFile);
   configFile.close();
-}
+};
 
 
 bool Esp8266Configuration::isWifiApConfigurationValid(){
@@ -112,7 +93,6 @@ bool Esp8266Configuration::isWifiApConfigurationValid(){
 }
 
 bool Esp8266Configuration::isWifiStationConfigurationValid(){
-
   return (
     wifi_station_password != NULL &&
     strlen(wifi_station_password) > 7 &&
@@ -134,13 +114,10 @@ bool Esp8266Configuration::isMqttEnabled() {
 }
 
 bool Esp8266Configuration::isMqttConfigurationValid(){
-
-  return (
-    mqtt_host != NULL &&
-    sizeof mqtt_host > 3 &&
-    mqtt_port > 1000 &&
-    mqtt_port < 30000
-  );
+  if ( mqtt_host == NULL) return false;
+  if (mqtt_port < 1000) return false;
+  if (mqtt_port > 30000) return false;
+  return true;
 }
 
 void Esp8266Configuration::writeConfiguration(const char* configuration){

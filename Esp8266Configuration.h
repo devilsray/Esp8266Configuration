@@ -1,11 +1,32 @@
-#include <map>
-#include <string>
+#include <FS.h>
+#include <ArduinoJson.h>          //https://github.com/bblanchon/ArduinoJson
+//#include <GpioPwm.h>
+//#include <list>
 
 #ifndef Esp8266Configuration_h
 #define Esp8266Configuration_h
 
 class Esp8266Configuration
 {
+  //std::list<GpioPwm> mapTest;
+
+  // wifi ap variables
+  char* wifi_ap_ssid = new char[255];
+  char* wifi_ap_password = new char[255];
+  bool wifi_ap_enabled = new char[255];
+
+  // wifi station variables
+  char* wifi_station_ssid = new char[255];
+  char* wifi_station_password = new char[255];
+  bool wifi_station_enabled = new char[255];
+
+  // mqtt configuration variables
+  bool mqtt_enabled = new char[255];
+  char* mqtt_host = new char[255];
+  char* mqtt_user = new char[255];
+  char* mqtt_password = new char[255];
+  int mqtt_port = 1883;
+
   public:
     // read configuration from spiffs
     void read();
