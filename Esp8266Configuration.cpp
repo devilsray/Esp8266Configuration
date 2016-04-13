@@ -4,37 +4,51 @@
 void Esp8266Configuration::setWifiApSsid(char* ssid){
   wifi_ap_ssid = ssid;
 }
+
 void Esp8266Configuration::setWifiApPassword(char* password){
   wifi_ap_password = password;
 }
+
 void Esp8266Configuration::setWifiStationSsid(char* ssid){
   wifi_station_ssid = ssid;
 }
+
 void Esp8266Configuration::setWifiStationPassword(char* password){
   wifi_station_password = password;
 }
+
 void Esp8266Configuration::setMqttServer(char* server){
   mqtt_host = server;
 }
+
 void Esp8266Configuration::setMqttPort(int port){
   mqtt_port = port;
 }
+
 void Esp8266Configuration::setMqttPassword(char* password){
   mqtt_password = password;
 }
+
 void Esp8266Configuration::setMqttUser(char* user){
   mqtt_user = user;
+}
+
+void Esp8266Configuration::setMqttDeviceName(char* deviceName){
+  mqtt_device_name = deviceName;
 }
 
 char* Esp8266Configuration::getWifiApSsid(){
   return wifi_ap_ssid;
 }
+
 char* Esp8266Configuration::getWifiApPassword(){
   return wifi_ap_password;
 }
+
 char* Esp8266Configuration::getWifiStationSsid(){
   return wifi_station_ssid;
 }
+
 char* Esp8266Configuration::getWifiStationPassword(){
   return wifi_station_password;
 }
@@ -49,6 +63,10 @@ int Esp8266Configuration::getMqttPort(){
 
 char* Esp8266Configuration::getMqttUser() {
   return mqtt_user;
+}
+
+char* Esp8266Configuration::getMqttDeviceName() {
+  return mqtt_device_name;
 }
 
 char* Esp8266Configuration::getMqttPassword() {
@@ -115,6 +133,7 @@ bool Esp8266Configuration::isMqttEnabled() {
 
 bool Esp8266Configuration::isMqttConfigurationValid(){
   if ( mqtt_host == NULL) return false;
+  if ( mqtt_device_name == NULL) return false;
   if (mqtt_port < 1000) return false;
   if (mqtt_port > 30000) return false;
   return true;
@@ -151,7 +170,6 @@ void Esp8266Configuration::read(){
         json.printTo(Serial);
         if (json.success()) {
           Serial.println("\nparsed json");
-          Serial.println("trying wifi_ap_ssid");
           if (json.containsKey("wifi_ap_ssid")) {
             const char* value = json["wifi_ap_ssid"];
             Serial.println(value);
@@ -160,7 +178,6 @@ void Esp8266Configuration::read(){
               strcpy(wifi_ap_ssid, value);
             }
           }
-          Serial.println("trying wifi_ap_password");
           if (json.containsKey("wifi_ap_password")) {
             const char* value = json["wifi_ap_password"];
             if (value != NULL) {
@@ -168,7 +185,6 @@ void Esp8266Configuration::read(){
               strcpy(wifi_ap_password, value);
             }
           }
-          Serial.println("trying wifi_station_ssid");
           if (json.containsKey("wifi_station_ssid")) {
             const char* value = json["wifi_station_ssid"];
             if (value != NULL) {
@@ -176,7 +192,6 @@ void Esp8266Configuration::read(){
               strcpy(wifi_station_ssid, value);
             }
           }
-          Serial.println("trying wifi_station_password");
           if (json.containsKey("wifi_station_password")) {
             const char* value = json["wifi_station_password"];
             if (value != NULL) {
@@ -184,7 +199,6 @@ void Esp8266Configuration::read(){
               strcpy(wifi_station_password, value);
             }
           }
-          Serial.println("trying mqtt_host");
           if (json.containsKey("mqtt_host")) {
             const char* value = json["mqtt_host"];
             if (value != NULL) {
@@ -192,7 +206,6 @@ void Esp8266Configuration::read(){
               strcpy(mqtt_host, value);
             }
           }
-          Serial.println("trying mqtt_port");
           if (json.containsKey("mqtt_port")) {
             const char* value = json["mqtt_port"];
             if (value != NULL) {
@@ -200,7 +213,6 @@ void Esp8266Configuration::read(){
               mqtt_port = atoi(value);
             }
           }
-          Serial.println("trying mqtt_user");
           if (json.containsKey("mqtt_user")) {
             const char* value = json["mqtt_user"];
             if (value != NULL) {
@@ -208,12 +220,18 @@ void Esp8266Configuration::read(){
               strcpy(mqtt_user, value);
             }
           }
-          Serial.println("trying mqtt_password");
           if (json.containsKey("mqtt_password")) {
             const char* value = json["mqtt_password"];
             if (value != NULL) {
               Serial.println(value);
               strcpy(mqtt_password, value);
+            }
+          }
+          if (json.containsKey("mqtt_device_name")) {
+            const char* value = json["mqtt_device_name"];
+            if (value != NULL) {
+              Serial.println(value);
+              strcpy(mqtt_device_name, value);
             }
           }
         } else {

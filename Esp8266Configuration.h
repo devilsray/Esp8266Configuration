@@ -25,6 +25,7 @@ class Esp8266Configuration
   char* mqtt_host = new char[255];
   char* mqtt_user = new char[255];
   char* mqtt_password = new char[255];
+  char* mqtt_device_name = new char[255];
   int mqtt_port = 1883;
 
   public:
@@ -58,6 +59,9 @@ class Esp8266Configuration
     // set mqtt username (changes will not be stored until write is called)
     void setMqttUser(char* user);
 
+    // set mqtt device name (changes will not be stored until write is called)
+    void setMqttDeviceName(char* deviceName);
+
     // write configuration to spiffs
     void writeConfiguration(const char* configuration);
 
@@ -90,6 +94,9 @@ class Esp8266Configuration
 
     // get the mqtt username
     char* getMqttUser();
+
+    // get the mqtt device name
+    char* getMqttDeviceName();
 
     // check if wifi ap configuration is valid
     bool isWifiApConfigurationValid();
