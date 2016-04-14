@@ -6,6 +6,26 @@
 #ifndef Esp8266Configuration_h
 #define Esp8266Configuration_h
 
+// Wifi ap js/json parameter naming
+const String PARAM_WIFI_AP_SSID          = "wifi_ap_ssid";
+const String PARAM_WIFI_AP_PASSWORD      = "wifi_ap_password";
+const String PARAM_WIFI_AP_ENABLED       = "wifi_ap_enabled";
+
+// Wifi station js/json parameter naming
+const String PARAM_WIFI_STATION_SSID     = "wifi_station_ssid";
+const String PARAM_WIFI_STATION_PASSWORD = "wifi_station_password";
+const String PARAM_WIFI_STATION_ENABLED  = "wifi_station_enabled";
+
+// mqtt js/json parameter naming
+const String PARAM_MQTT_ENABLED          = "mqtt_enabled";
+const String PARAM_MQTT_HOST             = "mqtt_host";
+const String PARAM_MQTT_USER             = "mqtt_user";
+const String PARAM_MQTT_PASSWORD         = "mqtt_password";
+const String PARAM_MQTT_DEVICE_NAME      = "mqtt_device_name";
+const String PARAM_MQTT_PORT             = "mqtt_port";
+
+const String CONFIG_FILE_NAME            = "configuration.json";
+
 class Esp8266Configuration
 {
   //std::list<GpioPwm> mapTest;
@@ -64,6 +84,10 @@ class Esp8266Configuration
 
     // write configuration to spiffs
     void writeConfiguration(const char* configuration);
+
+    void readParameter(String parameterName, char* variable, JsonObject& json);
+
+    void readParameter(String parameterName, int variable, JsonObject& json);
 
     // check if wifi ap is configured to be enabled
     bool isWifiApEnabled();
