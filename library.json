@@ -12,6 +12,7 @@
     "url": "https://github.com/devilsray/Esp8266Configuration"
   },
   "version": "0.1.1",
+  "examples": "examples/*/*.ino",
   "dependencies":
   {
     "name": "Json",
