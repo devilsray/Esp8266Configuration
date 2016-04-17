@@ -85,11 +85,12 @@ void Esp8266Configuration::write(){
   json[PARAM_WIFI_STATION_PASSWORD] = wifi_station_password;
   json[PARAM_WIFI_STATION_ENABLED]  = wifi_station_enabled;
 
-  json[PARAM_MQTT_ENABLED]  = mqtt_enabled;
-  json[PARAM_MQTT_HOST]     = mqtt_host;
-  json[PARAM_MQTT_PORT]     = mqtt_port;
-  json[PARAM_MQTT_USER]     = mqtt_user;
-  json[PARAM_MQTT_PASSWORD] = mqtt_password;
+  json[PARAM_MQTT_ENABLED]      = mqtt_enabled;
+  json[PARAM_MQTT_HOST]         = mqtt_host;
+  json[PARAM_MQTT_PORT]         = mqtt_port;
+  json[PARAM_MQTT_USER]         = mqtt_user;
+  json[PARAM_MQTT_PASSWORD]     = mqtt_password;
+  json[PARAM_MQTT_DEVICE_NAME]  = mqtt_device_name;
   //
   File configFile = SPIFFS.open("/configuration.json", "w");
   if (!configFile) {
