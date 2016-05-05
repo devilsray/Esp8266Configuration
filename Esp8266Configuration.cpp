@@ -156,7 +156,6 @@ void Esp8266Configuration::writeConfiguration(const char* configuration){
 
 void Esp8266Configuration::read(){
   if (SPIFFS.begin()) {
-    Serial.println("mounted file system");
     if (SPIFFS.exists("/configuration.json")) {
       //     //file exists, reading and loading
       Serial.println("reading config file");
@@ -179,8 +178,9 @@ void Esp8266Configuration::read(){
           readParameter(PARAM_WIFI_STATION_SSID, wifi_station_ssid, json);
           readParameter(PARAM_WIFI_STATION_PASSWORD, wifi_station_password, json);
           // reading mqtt configuration
+          readParameter(PARAM_MQTT_ENABLED, mqtt_enabled, json);
           readParameter(PARAM_MQTT_HOST, mqtt_host, json);
-          readParameter(PARAM_MQTT_PORT, mqtt_user, json);
+          readParameter(PARAM_MQTT_PORT, mqtt_port, json);
           readParameter(PARAM_MQTT_USER, mqtt_user, json);
           readParameter(PARAM_MQTT_PASSWORD, mqtt_password, json);
           readParameter(PARAM_MQTT_DEVICE_NAME, mqtt_device_name, json);
@@ -188,9 +188,11 @@ void Esp8266Configuration::read(){
           Serial.println("failed to load json config");
         }
       }
+      configFile.close();
     }
   } else {
     Serial.println("failed to mount FS");
+    return;
   }
   //end read
 }
