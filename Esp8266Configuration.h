@@ -122,6 +122,9 @@ class Esp8266Configuration
     // get the mqtt device name
     char* getMqttDeviceName();
 
+    // get the configuration file as char*
+    char* getRawConfiguration();
+
     // check if wifi ap configuration is valid
     bool isWifiApConfigurationValid();
 

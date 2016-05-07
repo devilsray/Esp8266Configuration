@@ -74,6 +74,32 @@ char* Esp8266Configuration::getMqttPassword() {
   return mqtt_password;
 }
 
+char* Esp8266Configuration::getRawConfiguration() {
+  if (SPIFFS.begin()) {
+    if (SPIFFS.exists("/configuration.json")) {
+      //     //file exists, reading and loading
+      Serial.println("reading config file");
+      File configFile = SPIFFS.open("/configuration.json", "r");
+      if (configFile) {
+        Serial.println("opened config file");
+        size_t size = configFile.size();
+        // Allocate a buffer to store contents of the file.
+        std::unique_ptr<char[]> buf(new char[size]);
+        configFile.readBytes(buf.get(), size);
+        return buf.get();
+        DynamicJsonBuffer jsonBuffer;
+      }
+      configFile.close();
+    } else {
+      return "{}";
+    }
+  } else {
+    Serial.println("failed to mount FS");
+    return "{}";
+  }
+  //end read
+}
+
 void Esp8266Configuration::write(){
   DynamicJsonBuffer jsonBuffer;
   JsonObject& json = jsonBuffer.createObject();
