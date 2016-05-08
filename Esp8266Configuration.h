@@ -1,5 +1,8 @@
 #include <FS.h>
-#include <ArduinoJson.h>          //https://github.com/bblanchon/ArduinoJson
+#include <ArduinoJson.h>
+#include "Arduino.h"
+#include <stdio.h>
+
 //#include <GpioPwm.h>
 //#include <list>
 
@@ -85,6 +88,9 @@ class Esp8266Configuration
     // write configuration to spiffs
     void writeConfiguration(const char* configuration);
 
+    // write configuration to spiffs
+    void writeRawConfiguration(const char* configuration);
+
     void readParameter(String parameterName, char* variable, JsonObject& json);
 
     void readParameter(String parameterName, int variable, JsonObject& json);
@@ -123,7 +129,7 @@ class Esp8266Configuration
     char* getMqttDeviceName();
 
     // get the configuration file as char*
-    char* getRawConfiguration();
+    String getRawConfiguration();
 
     // check if wifi ap configuration is valid
     bool isWifiApConfigurationValid();

@@ -1,7 +1,6 @@
 
 #include "Esp8266Configuration.h"
 
-
 void Esp8266Configuration::setWifiApSsid(char* ssid){
   wifi_ap_ssid = ssid;
 }
@@ -74,22 +73,19 @@ char* Esp8266Configuration::getMqttPassword() {
   return mqtt_password;
 }
 
-char* Esp8266Configuration::getRawConfiguration() {
+String Esp8266Configuration::getRawConfiguration() {
   if (SPIFFS.begin()) {
     if (SPIFFS.exists("/configuration.json")) {
       //     //file exists, reading and loading
       Serial.println("reading config file");
       File configFile = SPIFFS.open("/configuration.json", "r");
       if (configFile) {
-        Serial.println("opened config file");
-        size_t size = configFile.size();
-        // Allocate a buffer to store contents of the file.
-        std::unique_ptr<char[]> buf(new char[size]);
-        configFile.readBytes(buf.get(), size);
-        return buf.get();
-        DynamicJsonBuffer jsonBuffer;
+        String content = configFile.readString();
+        configFile.close();
+        Serial.printf("content: ");
+        Serial.println(content);
+        return content;
       }
-      configFile.close();
     } else {
       return "{}";
     }
@@ -168,16 +164,22 @@ bool Esp8266Configuration::isMqttConfigurationValid(){
 }
 
 void Esp8266Configuration::writeConfiguration(const char* configuration){
+  if (SPIFFS.begin()) {
   DynamicJsonBuffer jsonBuffer;
   JsonObject& json = jsonBuffer.parseObject(configuration);
   json.printTo(Serial);
   File configFile = SPIFFS.open("/configuration.json", "w");
   if (!configFile) {
     Serial.println("failed to open config file for writing");
+    return;
   }
   //
+  Serial.println("Writing configuration");
   json.printTo(configFile);
   configFile.close();
+}  else {
+  Serial.println("failed to open spiffs for writing");
+}
 }
 
 void Esp8266Configuration::read(){
@@ -194,6 +196,7 @@ void Esp8266Configuration::read(){
         configFile.readBytes(buf.get(), size);
         DynamicJsonBuffer jsonBuffer;
         JsonObject& json = jsonBuffer.parseObject(buf.get());
+        Serial.println("Configuration:");
         json.printTo(Serial);
         if (json.success()) {
           Serial.println("\nparsed json");
