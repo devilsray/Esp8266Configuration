@@ -86,10 +86,10 @@ class Esp8266Configuration
     void setMqttDeviceName(char* deviceName);
 
     // write configuration to spiffs
-    void writeConfiguration(const char* configuration);
+    void writeConfiguration(const char* &configuration);
 
     // write configuration to spiffs
-    void writeRawConfiguration(const char* configuration);
+    void writeConfiguration(String &configuration);
 
     void readParameter(String parameterName, char* variable, JsonObject& json);
 
@@ -142,6 +142,8 @@ class Esp8266Configuration
 
     // check if mqtt is configured to be enabled
     bool isMqttEnabled();
+private:
+  String _rawConfiguration;
 
 };
 

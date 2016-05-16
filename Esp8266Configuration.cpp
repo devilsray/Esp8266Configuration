@@ -75,19 +75,26 @@ char* Esp8266Configuration::getMqttPassword() {
 
 String Esp8266Configuration::getRawConfiguration() {
   if (SPIFFS.begin()) {
-    if (SPIFFS.exists("/configuration.json")) {
-      //     //file exists, reading and loading
-      Serial.println("reading config file");
-      File configFile = SPIFFS.open("/configuration.json", "r");
-      if (configFile) {
-        String content = configFile.readString();
-        configFile.close();
-        Serial.printf("content: ");
-        Serial.println(content);
-        return content;
+    if (_rawConfiguration == NULL) {
+      if (SPIFFS.exists("/configuration.json")) {
+        //     //file exists, reading and loading
+        Serial.println("reading config file");
+        File configFile = SPIFFS.open("/configuration.json", "r");
+        if (configFile) {
+          _rawConfiguration = configFile.readString();
+          configFile.close();
+          Serial.printf("content: ");
+          Serial.println(_rawConfiguration);
+          return _rawConfiguration;
+        } else {
+          Serial.println("error opening config file");
+        }
+      } else {
+        Serial.println("file does not exist");
+        return "{}";
       }
     } else {
-      return "{}";
+      return _rawConfiguration;
     }
   } else {
     Serial.println("failed to mount FS");
@@ -163,64 +170,73 @@ bool Esp8266Configuration::isMqttConfigurationValid(){
   return true;
 }
 
-void Esp8266Configuration::writeConfiguration(const char* configuration){
+void Esp8266Configuration::writeConfiguration(const char* &configuration){
   if (SPIFFS.begin()) {
-  DynamicJsonBuffer jsonBuffer;
-  JsonObject& json = jsonBuffer.parseObject(configuration);
-  json.printTo(Serial);
-  File configFile = SPIFFS.open("/configuration.json", "w");
-  if (!configFile) {
-    Serial.println("failed to open config file for writing");
-    return;
+    DynamicJsonBuffer jsonBuffer;
+    JsonObject& json = jsonBuffer.parseObject(configuration);
+    File configFile = SPIFFS.open("/configuration.json", "w");
+    if (!configFile) {
+      Serial.println("failed to open config file for writing");
+      return;
+    }
+    //
+    Serial.println("Writing configuration");
+    json.printTo(Serial);
+    json.printTo(configFile);
+    configFile.close();
+    Serial.println("Done");
+    _rawConfiguration = configuration;
+  }  else {
+    Serial.println("failed to open spiffs for writing");
   }
-  //
-  Serial.println("Writing configuration");
-  json.printTo(configFile);
-  configFile.close();
-}  else {
-  Serial.println("failed to open spiffs for writing");
 }
+
+void Esp8266Configuration::writeConfiguration(String &configuration){
+  if (SPIFFS.begin()) {
+    DynamicJsonBuffer jsonBuffer;
+    JsonObject& json = jsonBuffer.parseObject(configuration);
+    File configFile = SPIFFS.open("/configuration.json", "w");
+    if (!configFile) {
+      Serial.println("failed to open config file for writing");
+      return;
+    }
+    //
+    Serial.println("Writing configuration");
+    json.printTo(Serial);
+    json.printTo(configFile);
+    configFile.close();
+    Serial.println("Done");
+    _rawConfiguration = configuration;
+  }  else {
+    Serial.println("failed to open spiffs for writing");
+  }
 }
 
 void Esp8266Configuration::read(){
-  if (SPIFFS.begin()) {
-    if (SPIFFS.exists("/configuration.json")) {
-      //     //file exists, reading and loading
-      Serial.println("reading config file");
-      File configFile = SPIFFS.open("/configuration.json", "r");
-      if (configFile) {
-        Serial.println("opened config file");
-        size_t size = configFile.size();
-        // Allocate a buffer to store contents of the file.
-        std::unique_ptr<char[]> buf(new char[size]);
-        configFile.readBytes(buf.get(), size);
-        DynamicJsonBuffer jsonBuffer;
-        JsonObject& json = jsonBuffer.parseObject(buf.get());
-        Serial.println("Configuration:");
-        json.printTo(Serial);
-        if (json.success()) {
-          Serial.println("\nparsed json");
-          // reading wifi ap configuration
-          readParameter(PARAM_WIFI_AP_SSID, wifi_ap_ssid, json);
-          readParameter(PARAM_WIFI_AP_PASSWORD, wifi_ap_password, json);
-          // reading wifi station configuration
-          readParameter(PARAM_WIFI_STATION_SSID, wifi_station_ssid, json);
-          readParameter(PARAM_WIFI_STATION_PASSWORD, wifi_station_password, json);
-          // reading mqtt configuration
-          readParameter(PARAM_MQTT_ENABLED, mqtt_enabled, json);
-          readParameter(PARAM_MQTT_HOST, mqtt_host, json);
-          readParameter(PARAM_MQTT_PORT, mqtt_port, json);
-          readParameter(PARAM_MQTT_USER, mqtt_user, json);
-          readParameter(PARAM_MQTT_PASSWORD, mqtt_password, json);
-          readParameter(PARAM_MQTT_DEVICE_NAME, mqtt_device_name, json);
-        } else {
-          Serial.println("failed to load json config");
-        }
+  getRawConfiguration();
+  if (_rawConfiguration) {
+      DynamicJsonBuffer jsonBuffer;
+      JsonObject& json = jsonBuffer.parseObject(_rawConfiguration);
+      if (json.success()) {
+        Serial.println("\nparsed json");
+        // reading wifi ap configuration
+        readParameter(PARAM_WIFI_AP_SSID, wifi_ap_ssid, json);
+        readParameter(PARAM_WIFI_AP_PASSWORD, wifi_ap_password, json);
+        // reading wifi station configuration
+        readParameter(PARAM_WIFI_STATION_SSID, wifi_station_ssid, json);
+        readParameter(PARAM_WIFI_STATION_PASSWORD, wifi_station_password, json);
+        // reading mqtt configuration
+        readParameter(PARAM_MQTT_ENABLED, mqtt_enabled, json);
+        readParameter(PARAM_MQTT_HOST, mqtt_host, json);
+        readParameter(PARAM_MQTT_PORT, mqtt_port, json);
+        readParameter(PARAM_MQTT_USER, mqtt_user, json);
+        readParameter(PARAM_MQTT_PASSWORD, mqtt_password, json);
+        readParameter(PARAM_MQTT_DEVICE_NAME, mqtt_device_name, json);
+      } else {
+        Serial.println("failed to load json config");
       }
-      configFile.close();
-    }
   } else {
-    Serial.println("failed to mount FS");
+    Serial.println("failed to read configuration");
     return;
   }
   //end read
