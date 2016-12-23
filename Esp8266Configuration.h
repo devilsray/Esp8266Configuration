@@ -58,17 +58,23 @@ class Esp8266Configuration
     // write configuration to spiffs
     void write();
 
+    void setWifiApEnabled(bool enabled);
+
     // set wifi ap ssid (changes will not be stored until write is called)
     void setWifiApSsid(char* ssid);
 
     // set wifi ap password (changes will not be stored until write is called)
     void setWifiApPassword(char* password);
 
+    void setWifiStationEnabled(bool enabled);
+
     // set wifi station ssid (changes will not be stored until write is called)
     void setWifiStationSsid(char* ssid);
 
     // set wifi station password (changes will not be stored until write is called)
     void setWifiStationPassword(char* password);
+
+    void setMqttEnabled(bool enabled);
 
     // set mqtt server name or ip (changes will not be stored until write is called)
     void setMqttServer(char* server);

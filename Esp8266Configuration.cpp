@@ -1,6 +1,10 @@
 
 #include "Esp8266Configuration.h"
 
+void Esp8266Configuration::setWifiApEnabled(bool enabled){
+  wifi_ap_enabled = enabled;
+}
+
 void Esp8266Configuration::setWifiApSsid(char* ssid){
   wifi_ap_ssid = ssid;
 }
@@ -9,12 +13,20 @@ void Esp8266Configuration::setWifiApPassword(char* password){
   wifi_ap_password = password;
 }
 
+void Esp8266Configuration::setWifiStationEnabled(bool enabled){
+  wifi_station_enabled = enabled;
+}
+
 void Esp8266Configuration::setWifiStationSsid(char* ssid){
   wifi_station_ssid = ssid;
 }
 
 void Esp8266Configuration::setWifiStationPassword(char* password){
   wifi_station_password = password;
+}
+
+void Esp8266Configuration::setMqttEnabled(bool enabled){
+  mqtt_enabled = enabled;
 }
 
 void Esp8266Configuration::setMqttServer(char* server){
@@ -220,9 +232,11 @@ void Esp8266Configuration::read(){
       if (json.success()) {
         Serial.println("\nparsed json");
         // reading wifi ap configuration
+        readParameter(PARAM_WIFI_AP_ENABLED, wifi_ap_enabled, json);
         readParameter(PARAM_WIFI_AP_SSID, wifi_ap_ssid, json);
         readParameter(PARAM_WIFI_AP_PASSWORD, wifi_ap_password, json);
         // reading wifi station configuration
+        readParameter(PARAM_WIFI_STATION_ENABLED, wifi_ap_enabled, json);
         readParameter(PARAM_WIFI_STATION_SSID, wifi_station_ssid, json);
         readParameter(PARAM_WIFI_STATION_PASSWORD, wifi_station_password, json);
         // reading mqtt configuration
